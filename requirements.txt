@@ -1,0 +1,4 @@
+# Runtime dependencies — installed into the submission Docker image.
+# Keep this minimal (PRD §14.1). Exact versions are frozen in Phase 5 (Docker/CI).
+openai>=1.0
+pydantic>=2.0

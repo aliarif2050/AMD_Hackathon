@@ -1,0 +1,24 @@
+# Keep the submission image small and reproducible.
+# The Dockerfile only COPYs requirements.txt and app/ — everything else is context bloat.
+# Baseline from PRD §15.2, plus obvious extras (venv, .claude, PDFs).
+.git
+.github
+.venv
+venv
+env
+__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.claude
+.env
+.env.*
+tests
+input
+output
+practice
+requirements-dev.txt
+*.pyc
+*.md
+*.pdf
+LICENSE

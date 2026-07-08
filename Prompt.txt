@@ -1,0 +1,314 @@
+You are acting as a senior backend AI engineer, hackathon systems architect, and disciplined implementation agent.
+
+Read PRD.md fully before changing files.
+
+Implement the AMD Developer Hackathon Track 1 project exactly according to PRD.md.
+
+This project is an international hackathon submission, not a class assignment. Build it professionally, reliably, and according to the spec.
+
+==================================================
+CORE PROJECT REQUIREMENT
+==================================================
+
+Build a Python CLI batch agent, not a web app.
+
+Hard requirements:
+- Read /input/tasks.json.
+- Write /output/results.json.
+- Output must be a JSON list of objects with task_id and answer.
+- Use environment variables FIREWORKS_API_KEY, FIREWORKS_BASE_URL, and ALLOWED_MODELS.
+- All Fireworks calls must use FIREWORKS_BASE_URL.
+- Never call a model outside runtime ALLOWED_MODELS.
+- Never hardcode API keys.
+- Never hardcode or cache answers.
+- Never bundle .env into Docker.
+- Keep prompts short.
+- Keep dependencies minimal.
+- Add Dockerfile.
+- Add GitHub Actions workflow for linux/amd64 GHCR image.
+- Add tests for schema, I/O, router, local solvers, and model selection.
+- Add README.md and CLAUDE.md.
+- Follow PRD.md as the single source of truth.
+
+==================================================
+CODEBASE MEMORY MCP HARD RULE
+==================================================
+
+Use codebase-memory-mcp throughout the project to minimize token consumption.
+
+Before starting any implementation phase:
+1. Check codebase memory for:
+   - current project phase
+   - architecture summary
+   - previous decisions
+   - files already created
+   - known issues
+   - test status
+   - manual setup status
+
+During implementation:
+- Do not repeatedly re-read or re-summarize the full PRD unless necessary.
+- Read only the PRD sections relevant to the current phase.
+- Read only targeted project files needed for the active task.
+- Avoid broad codebase scans unless debugging requires it.
+- Avoid printing large file contents back to the user.
+- Make small, focused edits.
+
+After each completed phase:
+- Update codebase memory with:
+  - phase completed
+  - files created/modified
+  - decisions made
+  - tests run
+  - test result
+  - remaining TODOs
+  - manual setup required, if any
+
+Never store secrets in codebase memory:
+- no API keys
+- no GitHub tokens
+- no Fireworks keys
+- no private credentials
+- no hidden evaluation inputs
+
+==================================================
+PHASE-BY-PHASE IMPLEMENTATION HARD RULE
+==================================================
+
+Do not implement the entire project in one large pass.
+
+Develop the project strictly in blocks/phases.
+
+For each phase:
+1. State the phase name.
+2. State the goal of the phase.
+3. List files that will be created or modified.
+4. Implement only that phase.
+5. Run relevant tests if possible.
+6. Fix issues in that phase.
+7. Update codebase memory.
+8. Stop and report progress before moving to the next phase.
+
+Do not jump ahead to later phases unless I explicitly approve or say "continue".
+
+Implementation phases:
+
+Phase 0 — Project Setup
+- Create project structure.
+- Add base files.
+- Add .gitignore and .dockerignore if appropriate.
+- Add PRD.md if not already present.
+- Add initial CLAUDE.md according to PRD rules.
+- Do not implement Fireworks yet.
+
+Phase 1 — Schemas and I/O
+- Implement Task and Result schemas.
+- Implement /input/tasks.json reader.
+- Implement /output/results.json writer.
+- Add tests for schemas and I/O.
+- Output dummy answers only.
+- Do not implement Fireworks yet.
+
+Phase 2 — Config and Fireworks Client
+- Implement env var loader.
+- Read FIREWORKS_API_KEY.
+- Read FIREWORKS_BASE_URL.
+- Read and parse ALLOWED_MODELS.
+- Implement Fireworks OpenAI-compatible client.
+- Implement model picker that only selects from runtime ALLOWED_MODELS.
+- Add tests for config and model selection.
+- Do not make real API calls in unit tests.
+
+Phase 3 — Router
+- Implement router for:
+  - math
+  - sentiment
+  - ner
+  - summary
+  - code
+  - reasoning
+  - factual
+  - general
+- Add tests for all eight categories.
+
+Phase 4 — Local Solvers
+- Implement conservative local solver for simple math.
+- Implement conservative local solver for obvious sentiment.
+- Optional NER helper only if reliable.
+- Local solvers must return None when uncertain.
+- Add tests.
+- Do not hardcode practice answers.
+
+Phase 5 — Prompt Templates and Main Orchestration
+- Implement short task-specific prompts.
+- Implement main solve flow:
+  read tasks → classify → local solver → Fireworks fallback → clean answer → write results.
+- Handle task-level failures safely.
+- Add end-to-end test with mocked Fireworks client.
+
+Phase 6 — Docker
+- Add Dockerfile.
+- Ensure Docker runs python -m app.main.
+- Ensure .env, input, output, tests, and unnecessary files are not copied.
+- Add local Docker build/run instructions.
+- Do not add heavy dependencies.
+
+Phase 7 — GitHub Actions and GHCR
+- Add .github/workflows/docker.yml.
+- Build linux/amd64 image.
+- Push to ghcr.io/${{ github.repository_owner }}/amd-track1-agent:latest.
+- Mark manual steps separately for GHCR public visibility.
+
+Phase 8 — README and Final Docs
+- Add professional README.md.
+- Include overview, setup, env vars, Docker commands, testing, GHCR, troubleshooting, and submission checklist.
+- Ensure CLAUDE.md contains codebase-memory-mcp, manual setup, and decision-making rules.
+
+Phase 9 — Final Test and Compliance Audit
+- Run tests if possible.
+- Check Docker build command.
+- Check Docker run command.
+- Verify spec compliance.
+- Report remaining risks.
+
+==================================================
+MANUAL SETUP RULE
+==================================================
+
+If anything requires manual setup, do not waste tokens trying to do it.
+
+Manual setup includes:
+- Installing Docker Desktop
+- Starting Docker Desktop
+- Creating GitHub repo
+- Logging into GitHub CLI
+- Making GHCR package public
+- Creating or using Fireworks API key
+- Setting local environment variables
+- Submitting image to hackathon portal
+- Installing or configuring codebase-memory-mcp
+- Any browser/account/UI step
+
+When manual setup is needed, output this exact format:
+
+MANUAL SETUP REQUIRED
+
+What you need to do:
+1. ...
+
+Why this is needed:
+...
+
+Exact steps:
+...
+
+How to verify:
+...
+
+After you finish, tell me:
+"Done: <setup name>"
+
+Do not continue pretending the manual setup is complete.
+
+==================================================
+DECISION-MAKING RULE
+==================================================
+
+If a decision affects:
+- architecture
+- scoring
+- Docker reliability
+- token usage
+- model routing
+- dependencies
+- local solver confidence
+- error policy
+- submission strategy
+
+then use a short brainstorming process before implementing.
+
+Use this format:
+
+DECISION REQUIRED
+
+Decision:
+...
+
+Options:
+A. ...
+B. ...
+C. ...
+
+Recommendation:
+...
+
+Reason:
+...
+
+Ask for confirmation if the decision is high-impact or irreversible.
+
+For low-risk obvious decisions, proceed and record the decision in codebase memory.
+
+==================================================
+ENGINEERING RULES
+==================================================
+
+Do not build:
+- web app
+- FastAPI app
+- Streamlit app
+- frontend
+- database
+- browser automation
+- LangChain/LlamaIndex unless explicitly justified
+- local LLM in MVP
+- heavy ML dependencies
+
+Do build:
+- small Python CLI batch app
+- clean modular architecture
+- strict schema validation
+- safe Fireworks client
+- deterministic model picker
+- lightweight router
+- conservative local solvers
+- reliable Docker image
+- linux/amd64 GitHub Actions workflow
+- strong tests
+
+==================================================
+IMPLEMENTATION ORDER
+==================================================
+
+Follow this exact order and stop after each phase unless I approve continuing:
+
+1. Phase 0 — Project Setup
+2. Phase 1 — Schemas and I/O
+3. Phase 2 — Config and Fireworks Client
+4. Phase 3 — Router
+5. Phase 4 — Local Solvers
+6. Phase 5 — Prompt Templates and Main Orchestration
+7. Phase 6 — Docker
+8. Phase 7 — GitHub Actions and GHCR
+9. Phase 8 — README and CLAUDE.md finalization
+10. Phase 9 — Final Test and Spec Audit
+
+==================================================
+STARTING INSTRUCTION
+==================================================
+
+Start now with Phase 0 only.
+
+Before editing files:
+1. Read PRD.md.
+2. Check codebase-memory-mcp.
+3. Summarize Phase 0 goal briefly.
+4. List files you will create/modify.
+5. Identify any manual setup required.
+6. Then implement Phase 0 only.
+
+After Phase 0:
+- Report files created/modified.
+- Update codebase memory.
+- Tell me exactly what to do next.
+- Do not proceed to Phase 1 until I approve.
