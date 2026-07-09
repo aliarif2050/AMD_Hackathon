@@ -1,0 +1,6 @@
+# Streamlit demo dependencies — separate from the Docker submission image.
+# Install with: pip install -r requirements-streamlit.txt
+streamlit>=1.35
+openai>=1.0
+pydantic>=2.0
+python-dotenv>=1.0
