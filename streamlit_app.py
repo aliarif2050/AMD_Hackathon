@@ -299,7 +299,7 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("**Team**")
-    st.markdown("Sara Arif & Muhammad Ali Arif")
+    st.markdown("Muhammad Ali Arif & Sara Arif")
     st.markdown("**AMD Developer Hackathon — Track 1**")
     st.markdown("[GitHub Repo](https://github.com) · [Fireworks AI](https://fireworks.ai)")
 
@@ -307,7 +307,7 @@ with st.sidebar:
 st.markdown("# ⚡ AstraRoute AI Agent")
 st.markdown(
     "*AMD Developer Hackathon — Track 1 &nbsp;|&nbsp; "
-    "Team: Sara Arif & Muhammad Ali Arif*"
+    "Team: Muhammad Ali Arif & Sara Arif"
 )
 st.markdown('<div class="accent-bar"></div>', unsafe_allow_html=True)
 
