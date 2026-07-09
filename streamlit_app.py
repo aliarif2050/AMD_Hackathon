@@ -11,12 +11,6 @@ from typing import Any
 
 import streamlit as st
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()  # local dev only — Streamlit Cloud uses Secrets manager
-except ImportError:
-    pass  # python-dotenv not installed on Cloud — env vars come from st.secrets
-
 # ── page config (must be first st call) ──────────────────────────────────────
 st.set_page_config(
     page_title="AstraRoute AI Agent",
