@@ -1,0 +1,78 @@
+{
+  "totals": {
+    "tasks": 80,
+    "class_ok": 80,
+    "fire_ok": 80,
+    "answer_ok": 18,
+    "answer_n": 18,
+    "deferred": 62,
+    "misses": 0
+  },
+  "by_category": {
+    "math": {
+      "n": 16,
+      "class_ok": 16,
+      "fire_ok": 16,
+      "ans_n": 10,
+      "ans_ok": 10,
+      "deferred": 6
+    },
+    "sentiment": {
+      "n": 14,
+      "class_ok": 14,
+      "fire_ok": 14,
+      "ans_n": 8,
+      "ans_ok": 8,
+      "deferred": 6
+    },
+    "reasoning": {
+      "n": 12,
+      "class_ok": 12,
+      "fire_ok": 12,
+      "ans_n": 0,
+      "ans_ok": 0,
+      "deferred": 12
+    },
+    "code": {
+      "n": 12,
+      "class_ok": 12,
+      "fire_ok": 12,
+      "ans_n": 0,
+      "ans_ok": 0,
+      "deferred": 12
+    },
+    "ner": {
+      "n": 8,
+      "class_ok": 8,
+      "fire_ok": 8,
+      "ans_n": 0,
+      "ans_ok": 0,
+      "deferred": 8
+    },
+    "summary": {
+      "n": 6,
+      "class_ok": 6,
+      "fire_ok": 6,
+      "ans_n": 0,
+      "ans_ok": 0,
+      "deferred": 6
+    },
+    "factual": {
+      "n": 6,
+      "class_ok": 6,
+      "fire_ok": 6,
+      "ans_n": 0,
+      "ans_ok": 0,
+      "deferred": 6
+    },
+    "general": {
+      "n": 6,
+      "class_ok": 6,
+      "fire_ok": 6,
+      "ans_n": 0,
+      "ans_ok": 0,
+      "deferred": 6
+    }
+  },
+  "misses": []
+}

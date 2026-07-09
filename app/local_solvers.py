@@ -141,6 +141,12 @@ def _try_product(text: str) -> str | None:
 
 
 def _try_binary_arithmetic(text: str) -> str | None:
+    # Never fire on percentage prompts: "30% of 90 plus 12" must not be read as
+    # the bare "90 plus 12" (=102). Percentages are outside this solver's scope,
+    # so decline and let the model handle them.
+    if "%" in text:
+        return None
+
     op_words = {
         "+": "+",
         "plus": "+",

@@ -109,10 +109,23 @@ _MATH_KEYWORDS = (
     "product of",
 )
 
+# Explicit "number <operator> number" arithmetic (e.g. "156 + 89", "47 times 3",
+# "12 * 45", "1000 divided by 8"). These carry no math keyword, so the keyword
+# heuristic alone would misroute them to factual/general and starve the local
+# arithmetic solver. Bare '-' is intentionally excluded (too many false hits:
+# ranges, hyphenates, "9-5"); the "minus" word still routes correctly.
+_ARITH_EXPR = re.compile(
+    r"\d+(?:\.\d+)?\s*"
+    r"(?:\+|\*|/|x|times|plus|minus|divided by|multiplied by|multiply|divide)"
+    r"\s*\d+"
+)
+
 
 def _has_math_shape(text: str) -> bool:
     """True when the prompt looks like a numeric computation problem."""
     if "%" in text:
+        return True
+    if _ARITH_EXPR.search(text):
         return True
     # Two or more standalone numbers plus a math keyword => likely word problem.
     numbers = re.findall(r"\b\d+(?:\.\d+)?\b", text)
