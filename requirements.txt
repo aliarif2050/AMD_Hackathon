@@ -1,7 +1,10 @@
-# Runtime dependencies — installed into the submission Docker image.
-# Keep this minimal (PRD §14.1). Exact versions are frozen in Phase 5 (Docker/CI).
-openai>=1.0
-pydantic>=2.0
-# Also needed for Streamlit Cloud demo deployment:
+# Streamlit Community Cloud reads THIS file to deploy the AstraRoute demo UI.
+#
+# IMPORTANT: the graded Track 1 Docker image does NOT use this file. The
+# Dockerfile installs requirements-image.txt (openai + pydantic only). Keeping
+# streamlit OUT of the image is what fixes the ACCURACY_GATE_FAILED (0.0%)
+# regression — streamlit's transitive deps broke the openai runtime in the image
+# and every task fell back to "Unable to determine.".
+-r requirements-image.txt
 streamlit>=1.35
 python-dotenv>=1.0

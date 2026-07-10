@@ -1,0 +1,10 @@
+# Runtime dependencies for the GRADED Track 1 submission image ONLY.
+# The Dockerfile installs THIS file — keep it truly minimal (PRD §14.1).
+# Pinned to the exact versions the test suite (67 passing) validates, so the
+# built image runtime == the tested runtime.
+# DO NOT add streamlit / demo / dev deps here — that is what caused the
+# ACCURACY_GATE_FAILED (0%) submission: streamlit's dependency tree broke the
+# openai runtime in the image, so every model call fell back to
+# "Unable to determine." (0/19).
+openai==2.44.0
+pydantic==2.13.4

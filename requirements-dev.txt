@@ -1,4 +1,5 @@
 # Development/test dependencies — NOT installed into the submission image.
--r requirements.txt
+# Mirrors the graded image runtime (requirements-image.txt) plus test tooling.
+-r requirements-image.txt
 pytest>=7.0
 python-dotenv>=1.0
