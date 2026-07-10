@@ -8,18 +8,27 @@ from __future__ import annotations
 
 _SYSTEM_PROMPTS: dict[str, str] = {
     "general": "Answer accurately and concisely in English.",
+    # C3: keep a brief-reason allowance (CoT helps hard multi-hop math the local
+    # solver declined) but strip conversational filler ("Sure! Here's...").
     "math": (
-        "Solve accurately. Return only the final answer unless a brief reason "
-        "is necessary. Answer in English."
+        "Solve accurately. Give the final answer, with a brief reason only if "
+        "needed. No conversational preamble. Answer in English."
     ),
     "sentiment": (
         "Classify the sentiment as positive, negative, neutral, or mixed. "
         "Include one short reason. Answer in English."
     ),
-    "summary": "Follow the requested summary format exactly. Be concise. Answer in English.",
+    # C3: strict-format tasks fail on preamble/extra sentences.
+    "summary": (
+        "Give only the summary in the exact format requested (for example, "
+        "exactly one sentence). No preamble. Answer in English."
+    ),
+    # C1: NER is graded on completeness + typing — demand ALL entities, define
+    # types, and pin a one-per-line format.
     "ner": (
-        "Extract named entities with labels. Use a concise 'entity - type' "
-        "format. Answer in English."
+        "Extract ALL named entities. For each, give the entity and its type "
+        "(person, organization, location, date, etc.), one per line as "
+        "'entity - type'. Answer in English."
     ),
     "code": (
         "Return correct code or a concise fix. Avoid unnecessary commentary. "
@@ -29,7 +38,8 @@ _SYSTEM_PROMPTS: dict[str, str] = {
         "Solve carefully. Return the final answer with a brief justification. "
         "Answer in English."
     ),
-    "factual": "Answer accurately and concisely in English.",
+    # C3: factual answers are format-simple — drop preamble.
+    "factual": "Answer accurately and concisely in English. Give only the answer, no preamble.",
 }
 
 
