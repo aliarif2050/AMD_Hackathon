@@ -32,3 +32,23 @@ def test_format_sensitive_prompts_forbid_preamble():
 def test_math_prompt_still_allows_brief_reasoning():
     # C3 must NOT strip the CoT allowance that protects hard multi-hop math.
     assert "reason" in prompts.system_prompt("math").lower()
+
+
+def test_every_task_type_has_a_positive_output_cap():
+    # Phase B: every classifier output must map to a bounded, positive ceiling.
+    for task_type in TASK_TYPES:
+        assert prompts.max_output_tokens(task_type) > 0
+
+
+def test_unknown_task_type_output_cap_falls_back():
+    # Unclassified tasks still get a sane bounded ceiling.
+    assert prompts.max_output_tokens("does-not-exist") == prompts.max_output_tokens("general")
+
+
+def test_truncation_sensitive_caps_stay_generous():
+    # ner/reasoning/code truncation = wrong answer = lost gate point; keep them
+    # no smaller than the format-simple categories.
+    generous = min(
+        prompts.max_output_tokens(t) for t in ("ner", "reasoning", "code")
+    )
+    assert generous >= prompts.max_output_tokens("sentiment")

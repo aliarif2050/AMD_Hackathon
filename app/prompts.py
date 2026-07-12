@@ -46,3 +46,28 @@ _SYSTEM_PROMPTS: dict[str, str] = {
 def system_prompt(task_type: str) -> str:
     """Return the system prompt for ``task_type`` (falls back to 'general')."""
     return _SYSTEM_PROMPTS.get(task_type, _SYSTEM_PROMPTS["general"])
+
+
+# Phase B token lever: per-category output ceilings (§scoring token rank).
+# Each cap clips runaway completions without truncating a typical answer; caps
+# for truncation-sensitive tasks (ner/reasoning/code) are kept generous because
+# a cut-off answer there loses the accuracy gate. Prompts already steer concise
+# output, so this only trims the tail — modest, safe save. Fallback = general.
+_OUTPUT_TOKEN_LIMITS: dict[str, int] = {
+    "sentiment": 96,
+    "factual": 200,
+    "summary": 200,
+    "general": 256,
+    "math": 320,
+    "ner": 384,
+    "reasoning": 512,
+    "code": 512,
+}
+
+# Fallback ceiling for any unclassified task type.
+_DEFAULT_OUTPUT_LIMIT = 256
+
+
+def max_output_tokens(task_type: str) -> int:
+    """Return the output-token ceiling for ``task_type`` (falls back to default)."""
+    return _OUTPUT_TOKEN_LIMITS.get(task_type, _DEFAULT_OUTPUT_LIMIT)

@@ -62,7 +62,7 @@ def test_solve_returns_local_answer_without_model_call(monkeypatch):
 def test_solve_falls_through_to_model_when_local_solver_declines(monkeypatch):
     captured = {}
 
-    def _fake_complete(config, prompt, *, system=None, preferred_model=None):
+    def _fake_complete(config, prompt, *, system=None, preferred_model=None, max_tokens=None):
         captured["prompt"] = prompt
         captured["preferred_model"] = preferred_model
         return "model answer"

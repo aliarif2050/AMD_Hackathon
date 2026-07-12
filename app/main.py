@@ -43,6 +43,7 @@ def solve(task: Task, config: Config) -> str:
         task.prompt,
         system=prompts.system_prompt(task_type),
         preferred_model=model,
+        max_tokens=prompts.max_output_tokens(task_type),
     )
 
 
