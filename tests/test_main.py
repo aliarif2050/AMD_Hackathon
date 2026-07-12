@@ -77,9 +77,12 @@ def test_main_returns_zero(tmp_path: Path, monkeypatch):
 def test_solve_uses_classified_model_and_returns_answer(monkeypatch):
     captured = {}
 
-    def _fake_complete(config, prompt, *, system=None, preferred_model=None):
+    def _fake_complete(
+        config, prompt, *, system=None, preferred_model=None, max_tokens=None
+    ):
         captured["preferred_model"] = preferred_model
         captured["system"] = system
+        captured["max_tokens"] = max_tokens
         return "Canberra."
 
     monkeypatch.setattr(fireworks_client, "complete", _fake_complete)
@@ -91,3 +94,4 @@ def test_solve_uses_classified_model_and_returns_answer(monkeypatch):
     # Factual task => minimax-m3 is the top preferred model present in allowed.
     assert captured["preferred_model"] == "minimax-m3"
     assert captured["system"]
+    assert captured["max_tokens"] == 256

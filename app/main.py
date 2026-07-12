@@ -21,12 +21,7 @@ FALLBACK_ANSWER = "Unable to determine."
 
 
 def solve(task: Task, config: Config) -> str:
-    """Return an answer for a single task.
-
-    Phase 3: classify -> pick model -> Fireworks. Phase 4 will insert a local
-    deterministic solver at the marked seam and only call Fireworks when the
-    solver declines (returns None).
-    """
+    """Return a local answer when safe, otherwise use one bounded model call."""
     task_type = router.classify(task.prompt)
 
     local = local_solvers.try_solve(task_type, task.prompt)
@@ -43,6 +38,7 @@ def solve(task: Task, config: Config) -> str:
         task.prompt,
         system=prompts.system_prompt(task_type),
         preferred_model=model,
+        max_tokens=prompts.max_output_tokens(task_type),
     )
 
 

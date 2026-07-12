@@ -873,21 +873,44 @@ amd-track1-agent/
 
 ### 14.1 Suggested Dependencies
 
-#### Runtime
+> ⛔ **IMAGE DEPENDENCY ISOLATION (hard rule — a violation caused a 0% submission).**
+> Requirements are split into THREE files so demo/dev deps can NEVER enter the graded image:
+> - **`requirements-image.txt`** — the GRADED image ONLY. The Dockerfile installs this and nothing
+>   else. Pinned to the exact versions the passing test suite validates (image runtime == tested runtime).
+> - **`requirements.txt`** — the Streamlit-Cloud DEMO only (`-r requirements-image.txt` + streamlit +
+>   python-dotenv). Streamlit Cloud auto-reads this file; the image must not.
+> - **`requirements-dev.txt`** — local tests (`-r requirements-image.txt` + pytest).
+>
+> **Incident:** the demo merge added `streamlit>=1.35` to `requirements.txt`, which the Dockerfile then
+> installed into the image. Streamlit's transitive deps broke the `openai` runtime → every model call
+> threw → every task fell back to `"Unable to determine."` → `ACCURACY_GATE_FAILED` 0/19. The image still
+> built green and exited 0 (silent runtime break, invisible to local tests). NEVER add demo/UI/dev deps
+> to `requirements-image.txt`.
+
+#### Runtime (graded image — `requirements-image.txt`, pinned)
 
 ```text
-openai
-pydantic
+openai==2.44.0
+pydantic==2.13.4
 ```
 
-#### Development
+#### Development (`requirements-dev.txt`)
 
 ```text
+-r requirements-image.txt
 pytest
 python-dotenv
 ```
 
-#### Avoid Initially
+#### Demo only (`requirements.txt` — Streamlit Cloud, NOT the image)
+
+```text
+-r requirements-image.txt
+streamlit
+python-dotenv
+```
+
+#### Never in the graded image (`requirements-image.txt`)
 
 ```text
 langchain
@@ -899,6 +922,8 @@ opencv
 fastapi
 streamlit
 flask
+python-dotenv
+pytest
 ```
 
 ### 14.2 Schema Design
@@ -1023,6 +1048,10 @@ Local solvers are not meant to replace the model. They are meant to save tokens 
 
 ### 15.1 Dockerfile
 
+> ⛔ Installs `requirements-image.txt` (openai + pydantic ONLY) — NOT `requirements.txt` (which carries
+> the streamlit demo deps). See §14.1 for why: a `requirements.txt` install once broke the openai runtime
+> and scored 0/19. Keep this line as `requirements-image.txt`.
+
 ```dockerfile
 FROM python:3.12-slim
 
@@ -1031,8 +1060,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-image.txt .
+RUN pip install --no-cache-dir -r requirements-image.txt
 
 COPY app ./app
 

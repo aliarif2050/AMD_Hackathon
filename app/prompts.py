@@ -7,42 +7,57 @@ task prompt — these only set the system role.
 from __future__ import annotations
 
 _SYSTEM_PROMPTS: dict[str, str] = {
-    "general": "Answer accurately and concisely in English.",
-    # C3: keep a brief-reason allowance (CoT helps hard multi-hop math the local
-    # solver declined) but strip conversational filler ("Sure! Here's...").
+    "general": (
+        "Answer accurately and concisely in English; follow requested content "
+        "and format."
+    ),
     "math": (
-        "Solve accurately. Give the final answer, with a brief reason only if "
-        "needed. No conversational preamble. Answer in English."
+        "Solve accurately. Include every requested result and a brief "
+        "justification if needed. No preamble. English."
     ),
     "sentiment": (
-        "Classify the sentiment as positive, negative, neutral, or mixed. "
-        "Include one short reason. Answer in English."
+        "Classify as positive, negative, neutral, or mixed. If requested, "
+        "briefly justify, covering both sides. English."
     ),
-    # C3: strict-format tasks fail on preamble/extra sentences.
     "summary": (
-        "Give only the summary in the exact format requested (for example, "
-        "exactly one sentence). No preamble. Answer in English."
+        "Return only the English summary. Obey exact sentence, bullet, and word "
+        "limits; no preamble."
     ),
-    # C1: NER is graded on completeness + typing — demand ALL entities, define
-    # types, and pin a one-per-line format.
     "ner": (
-        "Extract ALL named entities. For each, give the entity and its type "
-        "(person, organization, location, date, etc.), one per line as "
-        "'entity - type'. Answer in English."
+        "Extract all named entities and requested types as 'entity - type', "
+        "one per line. English."
     ),
     "code": (
-        "Return correct code or a concise fix. Avoid unnecessary commentary. "
-        "Answer in English."
+        "Return correct, complete code or the requested fix with minimal "
+        "English commentary."
     ),
     "reasoning": (
-        "Solve carefully. Return the final answer with a brief justification. "
-        "Answer in English."
+        "Solve carefully. Give every requested result with a brief English "
+        "justification."
     ),
-    # C3: factual answers are format-simple — drop preamble.
-    "factual": "Answer accurately and concisely in English. Give only the answer, no preamble.",
+    "factual": (
+        "Answer accurately and concisely. Include requested distinctions or "
+        "explanations; no preamble. English."
+    ),
+}
+
+_OUTPUT_TOKEN_LIMITS: dict[str, int] = {
+    "sentiment": 128,
+    "factual": 256,
+    "summary": 256,
+    "ner": 256,
+    "general": 256,
+    "math": 384,
+    "reasoning": 512,
+    "code": 512,
 }
 
 
 def system_prompt(task_type: str) -> str:
     """Return the system prompt for ``task_type`` (falls back to 'general')."""
     return _SYSTEM_PROMPTS.get(task_type, _SYSTEM_PROMPTS["general"])
+
+
+def max_output_tokens(task_type: str) -> int:
+    """Return the conservative output ceiling for ``task_type``."""
+    return _OUTPUT_TOKEN_LIMITS.get(task_type, _OUTPUT_TOKEN_LIMITS["general"])
