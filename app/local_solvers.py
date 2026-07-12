@@ -45,25 +45,6 @@ _NEGATIVE_CUES = {
 }
 _CONTRASTS = {"but", "however", "although", "though", "yet", "nevertheless"}
 _NEGATIONS = {"not", "never", "no", "none", "hardly", "barely", "without"}
-_REASON_REQUEST_CUES = {
-    "basis",
-    "because",
-    "describe",
-    "evidence",
-    "explain",
-    "explanation",
-    "justification",
-    "justify",
-    "rationale",
-    "reason",
-    "why",
-}
-_REASON_REQUEST_PHRASES = {
-    "one sentence",
-    "one-sentence",
-    "support the classification",
-    "support your classification",
-}
 
 
 def try_solve(task_type: str, prompt: str) -> str | None:
@@ -210,33 +191,18 @@ def _try_sentiment(prompt: str) -> str | None:
     if tokens & _CONTRASTS or tokens & _NEGATIONS:
         return None
 
-    instruction, separator, body = text.partition(":")
-    if not separator:
-        instruction = text
-        body = text
-
-    instruction_tokens = set(re.findall(r"[a-z']+", instruction))
-    tokens = set(re.findall(r"[a-z']+", body))
-    reason_requested = bool(instruction_tokens & _REASON_REQUEST_CUES) or any(
-        phrase in instruction for phrase in _REASON_REQUEST_PHRASES
-    )
+    # Prefer the review body after the instruction when present.
+    if ":" in text:
+        text = text.split(":", 1)[1]
+        tokens = set(re.findall(r"[a-z']+", text))
 
     positive = tokens & _POSITIVE_CUES
     negative = tokens & _NEGATIVE_CUES
     if positive and not negative:
-        return _format_sentiment("positive", positive, reason_requested)
+        return "positive"
     if negative and not positive:
-        return _format_sentiment("negative", negative, reason_requested)
+        return "negative"
     return None
-
-
-def _format_sentiment(label: str, cues: set[str], reason_requested: bool) -> str:
-    if not reason_requested:
-        return label
-
-    examples = sorted(cues)[:2]
-    quoted = " and ".join(f'"{cue}"' for cue in examples)
-    return f"{label.capitalize()}: The text uses clearly {label} language, including {quoted}."
 
 
 def _numbers(text: str) -> list[Decimal]:

@@ -33,26 +33,6 @@ def test_sentiment_one_sided_answers():
     assert local_solvers.try_solve("sentiment", "Classify sentiment: The app is terrible and slow.") == "negative"
 
 
-def test_sentiment_reason_request_is_answered_locally():
-    positive = "Classify as Positive, Negative, or Neutral and give a one-sentence reason: The battery is great and excellent."
-    negative = "Classify the sentiment and explain why: The app is terrible and slow."
-
-    assert local_solvers.try_solve("sentiment", positive) == (
-        'Positive: The text uses clearly positive language, including "excellent" and "great".'
-    )
-    assert local_solvers.try_solve("sentiment", negative) == (
-        'Negative: The text uses clearly negative language, including "slow" and "terrible".'
-    )
-
-
-def test_sentiment_reason_detection_only_uses_instruction():
-    prompt = "Classify sentiment: Customer support was excellent and the product is great."
-    assert local_solvers.try_solve("sentiment", prompt) == "positive"
-
-    sentence_prompt = "Classify this sentence's customer support sentiment: The service was excellent."
-    assert local_solvers.try_solve("sentiment", sentence_prompt) == "positive"
-
-
 def test_sentiment_mixed_or_negated_declines():
     mixed = "Classify the sentiment of this review: The battery life is great, but the screen scratches too easily."
     assert local_solvers.try_solve("sentiment", mixed) is None
@@ -79,28 +59,12 @@ def test_solve_returns_local_answer_without_model_call(monkeypatch):
     assert answer == "144"
 
 
-def test_solve_returns_local_sentiment_reason_without_model_call(monkeypatch):
-    def _unexpected_call(*a, **k):
-        raise AssertionError("Fireworks should not be called for local answers")
-
-    monkeypatch.setattr(fireworks_client, "complete", _unexpected_call)
-    prompt = "Classify the sentiment and give a reason: The product is excellent and great."
-    answer = main.solve(Task(task_id="sentiment-reason", prompt=prompt), _live_config())
-
-    assert answer == (
-        'Positive: The text uses clearly positive language, including "excellent" and "great".'
-    )
-
-
 def test_solve_falls_through_to_model_when_local_solver_declines(monkeypatch):
     captured = {}
 
-    def _fake_complete(
-        config, prompt, *, system=None, preferred_model=None, max_tokens=None
-    ):
+    def _fake_complete(config, prompt, *, system=None, preferred_model=None):
         captured["prompt"] = prompt
         captured["preferred_model"] = preferred_model
-        captured["max_tokens"] = max_tokens
         return "model answer"
 
     monkeypatch.setattr(fireworks_client, "complete", _fake_complete)
@@ -110,4 +74,3 @@ def test_solve_falls_through_to_model_when_local_solver_declines(monkeypatch):
     assert answer == "model answer"
     assert captured["prompt"] == prompt
     assert captured["preferred_model"] == "gemma-4-26b-a4b-it"
-    assert captured["max_tokens"] == 128

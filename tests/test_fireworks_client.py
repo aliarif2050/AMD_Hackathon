@@ -70,16 +70,6 @@ def test_complete_returns_answer_and_uses_temperature_zero():
     assert out == "Canberra."
     assert fake.calls[0]["temperature"] == 0
     assert fake.calls[0]["model"] == "minimax-m3"
-    assert fake.calls[0]["max_tokens"] == 512
-
-
-def test_complete_passes_explicit_output_ceiling():
-    cfg = _cfg(["gemma-4-26b-a4b-it"])
-    fake = FakeClient({"gemma-4-26b-a4b-it": "positive"})
-
-    complete(cfg, "Classify sentiment", max_tokens=128, client=fake)
-
-    assert fake.calls[0]["max_tokens"] == 128
 
 
 def test_system_prompt_is_prepended():
